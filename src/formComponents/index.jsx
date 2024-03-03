@@ -1,0 +1,259 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Box, 
+  Typography, 
+  TextField, 
+  Checkbox, 
+  FormControlLabel, 
+  Button, 
+  useMediaQuery, 
+  useTheme, 
+  Card, 
+  MenuItem, 
+  Radio, 
+  RadioGroup, 
+  FormControl, 
+  FormLabel,
+  Grid,
+  InputLabel,
+  Select,
+} from '@mui/material';
+import Header from 'components/Header';
+
+const Formsofx = () => {
+  const isNonMobile = useMediaQuery("(min-width: 1000px)");
+  const theme = useTheme();
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [filteredForms, setFilteredForms] = useState(null);
+  const [selectedTitle, setSelectedTitle] = useState('');
+  const [filePreview, setFilePreview] = useState(null);
+  const [selectedFileFieldId, setSelectedFileFieldId] = useState(null);
+
+  useEffect(() => {
+    // Retrieve selected form data from localStorage
+    const formData = JSON.parse(localStorage.getItem('selectedFormData'));
+    setSelectedForm(formData);
+    console.log("P:", formData);
+  }, []);
+
+  useEffect(() => {
+    if (selectedForm) {
+      // Filter forms by title
+      const filtered = Object.keys(selectedForm).filter(sectionKey => selectedForm[sectionKey]?.section_data?.title?.en === selectedTitle);
+      setFilteredForms(filtered);
+    }
+  }, [selectedTitle, selectedForm]);
+
+  const handleSubmit = () => {
+    // Handle form submission here
+    // You can access form data from selectedForm state
+    console.log("S:", selectedForm);
+  };
+
+  const handleFileChange = (e, fieldId) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFilePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+      setSelectedFileFieldId(fieldId); // Update the selected file field ID
+    }
+  };
+
+  const renderFormField = (field) => {
+    switch (field.field_type) {
+      case 'NUMERIC POSITIVE INTEGER':
+        return (
+          <TextField
+            key={field.id_code}
+            label={field.inquiry.en}
+            type="number"
+            InputProps={{
+              inputProps: { min: 0, step: 1 }, // Allow only positive integers
+            }}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={(e) => console.log(e.target.value)} // Handle value change
+          />
+        );
+      case 'DATE':
+        return (
+          <TextField
+            key={field.id_code}
+            label={field.inquiry.en}
+            type="date"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={(e) => console.log(e.target.value)} // Handle value change
+          />
+        );
+      case 'YES OR NO':
+        return (
+          <FormControl component="fieldset" key={field.id_code}>
+            <FormLabel component="legend">{field.inquiry.en}</FormLabel>
+            <RadioGroup 
+              row 
+              aria-label={field.inquiry.en} 
+              name={field.inquiry.en}
+              defaultValue={field.defaultValue} // set default value if needed
+            >
+              <FormControlLabel 
+                value="yes" 
+                control={<Radio />} 
+                label="Yes" 
+              />
+              <FormControlLabel 
+                value="no" 
+                control={<Radio />} 
+                label="No" 
+              />
+            </RadioGroup>
+          </FormControl>
+        );
+      case 'SINGLE SELECT':
+        return (
+          <FormControl key={field.id_code} variant="outlined" fullWidth margin="normal">
+            <InputLabel>{field.inquiry.en}</InputLabel>
+            <Select
+              label={field.inquiry.en}
+              value={''} // Set the selected value state here
+              onChange={(e) => console.log(e.target.value)} // Handle value change
+            >
+              {/* Map through options to create Select options */}
+              {field.options && field.options.map((option) => (
+                <MenuItem key={option.id} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        );
+      case 'SMALL TEXT BOX':
+      case 'NUMERIC FLOAT':
+      case 'LARGE TEXT BOX':
+        return (
+          <TextField 
+            key={field.id_code} 
+            label={field.inquiry.en} 
+            variant="outlined" 
+            fullWidth 
+            margin="normal" 
+            multiline={field.field_type === 'LARGE TEXT BOX'} 
+            rows={field.field_type === 'LARGE TEXT BOX' ? 4 : 1} 
+            type={field.field_type === 'NUMERIC FLOAT' ? 'number' : 'text'} 
+          />
+        );
+      case 'CHECKBOX':
+        return (
+          <FormControlLabel
+            key={field.id_code}
+            control={<Checkbox />}
+            label={field.inquiry.en}
+          />
+        );
+      case 'IMAGE':
+      case 'DOCUMENT':
+        return (
+          <div>
+            <FormLabel component="legend">{field.inquiry.en}</FormLabel>
+            <input
+              key={field.id_code}
+              type="file"
+              accept={field.field_type === 'IMAGE' ? 'image/*' : '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'}
+              onChange={(e) => handleFileChange(e, field.id_code)} // Pass field ID to handleFileChange
+            />
+            {selectedFileFieldId === field.id_code && filePreview && (
+              <img src={filePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />
+            )}
+          </div>
+        );
+
+        case 'TIME':
+  return (
+    <TextField
+      key={field.id_code}
+      label={field.inquiry.en}
+      type="time"
+      InputLabelProps={{
+        shrink: true,
+      }}
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      onChange={(e) => console.log(e.target.value)} // Handle value change
+    />
+  );
+      // Add cases for other field types
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Box m="1.5rem 2.5rem">
+      <Header title={`FORMS OF ${selectedForm && selectedForm[Object.keys(selectedForm)[0]]?.section_data?.form || ""}`} />
+      
+      <Box display="flex" justifyContent="center">
+        {/* Select input for choosing title */}
+        <TextField
+          select
+          label="Select Title"
+          value={selectedTitle}
+          onChange={(e) => setSelectedTitle(e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+        >
+          {/* Map through titles to create options */}
+          {selectedForm && Object.keys(selectedForm).map((sectionKey) => (
+            <MenuItem key={sectionKey} value={selectedForm[sectionKey]?.section_data?.title?.en}>
+              {selectedForm[sectionKey]?.section_data?.title?.en}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
+
+      {filteredForms && filteredForms.map((sectionKey) => (
+        <Box
+          key={sectionKey}
+          mt="20px"
+        >
+          <Card
+            sx={{
+              backgroundImage: "none",
+              backgroundColor: theme.palette.background.alt,
+              borderRadius: "0.55rem",
+              padding: "20px",
+            }}
+          >
+            <Typography variant="h4">
+              {selectedForm[sectionKey]?.section_data?.title?.en || "Title Not Available"}
+            </Typography>
+            <Grid container spacing={2}>
+              {/* Render other form fields if fields array is not null */}
+              {selectedForm[sectionKey]?.fields && selectedForm[sectionKey]?.fields.map((field) => (
+                <Grid item xs={12} sm={6} key={field.id_code}>
+                  {renderFormField(field)}
+                </Grid>
+              ))}
+            </Grid>
+            {/* Add more form fields as needed */}
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
+            
+          </Card>
+        </Box>
+      ))}
+    </Box>
+  );
+};
+
+export default Formsofx;
