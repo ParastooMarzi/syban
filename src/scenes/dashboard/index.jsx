@@ -76,38 +76,61 @@ const Dashboard = () => {
         sx={{
           "& > div": { gridColumn: isNonMediumScreens ? undefined : "span 12" },
         }}
+        
       >
-        {/* ROW 1 */}
-        <StatBox
-
-  title={
-    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-      <Typography>FORM GENERATOR...</Typography>
-      <a href="/formgenerator">
-      <Button 
-        variant="contained" 
-        size="large" 
-        sx={{ 
-          color: theme.palette.secondary[400], 
-          flexGrow: 1,
-        }}
+      {/* ROW 1 : Form generator */}
+      <StatBox
+    title={
+      <Box
+      bgcolor="#f0f0f0"
+      padding="20px"
+      borderRadius="10px"
+      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        alignItems={{ xs: "center", md: "flex-start" }}
+        justifyContent="center"
+        height="120px"
+        color={theme.palette.secondary[500]}
       >
-        JOIN NOW
-      </Button></a>
-    </Box>
-  }
-  description="Generate your own form"
-/>
-
-
+        <Typography variant="h5" mt={2} sx={{ marginBottom: { xs: 2, md: 0 }} }>
+          FORM GENERATOR
+        </Typography>
+        <a href="/formgenerator" style={{ textDecoration: "none", margin: { xs: "10px 0", md: "0 10px" } }}>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              background: "linear-gradient(to right, rgb(255, 149, 0), rgb(255, 221, 0))",
+              borderRadius: "30px",
+              border: 0,
+              color: "white",
+              height: "auto",
+             
+              boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                background: "linear-gradient(to right, rgb(255, 200, 0), rgb(255, 123, 0))",
+                boxShadow: "0 5px 8px 3px rgba(255, 105, 135, .3)",
+              },
+            }}
+          >
+            JOIN NOW
+          </Button>
+        </a>
+      </Box>
+    }
+    
+  />
         <StatBox
-          title="Sales Today"
+          title="Today's Forms"
+          
           value={data && data.todayStats.totalSales}
           increase="+21%"
           description="Since last month"
           icon={
             <PointOfSale
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{ color:"#FFC524", fontSize: "26px" }}
             />
           }
         />
@@ -121,24 +144,24 @@ const Dashboard = () => {
           <OverviewChart view="sales" isDashboard={true} />
         </Box>
         <StatBox
-          title="Monthly Sales"
+          title="Monthly Forms"
           value={data && data.thisMonthStats.totalSales}
           increase="+5%"
           description="Since last month"
           icon={
             <PersonAdd
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{  color:"#FFC524", fontSize: "26px" }}
             />
           }
         />
         <StatBox
-          title="Yearly Sales"
+          title="Yearly Forms"
           value={data && data.yearlySalesTotal}
           increase="+43%"
           description="Since last month"
           icon={
             <Traffic
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{  color:"#FFC524", fontSize: "26px" }}
             />
           }
         />
@@ -156,8 +179,8 @@ const Dashboard = () => {
               borderBottom: "none",
             },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[100],
+              backgroundColor: "#FFC524",
+              color: theme.palette.secondary[500],
               borderBottom: "none",
             },
             "& .MuiDataGrid-virtualScroller": {
@@ -188,7 +211,7 @@ const Dashboard = () => {
           borderRadius="0.55rem"
         >
           <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>
-            Sales By Category
+            Forms Categories
           </Typography>
           <BreakdownChart isDashboard={true} />
           <Typography

@@ -289,8 +289,7 @@ const FormGenerator = () => {
                   />
                 ))}
                 <Button
-                  variant="outlined"
-                  color="primary"
+                  variant="primary" color="contained" 
                   onClick={() => handleAddFieldValue(index)}
                 >
                   Add Value

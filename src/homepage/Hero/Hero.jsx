@@ -5,6 +5,7 @@ import feature from '../assets/feature.png';
 import slogan from '../assets/slogan.png';
 import { FaLock, FaUser, FaPhone, FaMailBulk } from 'react-icons/fa';
 import { loginUser } from '../../api/authApi';
+import { Link } from 'react-scroll';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -42,11 +43,11 @@ const LoginForm = () => {
                 </div>
         <button type="submit">Login</button>
         <div className="register-link">
-          <p>Don't have an account? <a href="#">Join us</a></p>
+          <p>Don't have an account? <Link to='Join' smooth={true} span={true}> Join us</Link></p>
         </div>
       </form>
     </div>
-  );
+  ); 
 };
 
 

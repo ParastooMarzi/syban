@@ -131,7 +131,7 @@ const Sidebar = ({
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color={theme.palette.secondary[400]}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
-                  <Typography variant="h4" fontWeight="bold">
+                  <Typography variant="h4" fontWeight="bold" color="#FFC524" >
                     SYBAN
                   </Typography>
                 </Box>
@@ -163,12 +163,12 @@ const Sidebar = ({
                       sx={{
                         backgroundColor:
                           active === lcText
-                            ? theme.palette.secondary[400]
+                            ? theme.palette.secondary[500]
                             : "transparent",
                         color:
                           active === lcText
-                            ? theme.palette.primary[600]
-                            : theme.palette.secondary[100],
+                            ? "#FFC524"
+                            : theme.palette.secondary[500],
                       }}
                     >
                       <ListItemIcon

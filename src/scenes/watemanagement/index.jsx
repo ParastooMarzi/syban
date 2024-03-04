@@ -93,7 +93,7 @@ const WasteManagement = () => {
               <Typography variant="body2">Reference: {form.ref}</Typography>
             </CardContent>
             <CardActions>
-              <Button variant="primary" size="small" component={Link} to="/formsofx" onClick={() => handleEditClick(form.ref)}><FaRegEdit size={20}/></Button>
+              <Button variant="primary" size="small" component={Link} to="/formsofx" onClick={() => handleEditClick(form.ref)}><FaRegEdit size={20} color="#FFC524"/></Button>
               <Button variant="primary" size="small"><FaEye size={20} /></Button>
               <Button variant="primary" size="small"><MdOutlineLibraryAdd size={20}/></Button>
               <Button

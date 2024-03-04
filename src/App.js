@@ -24,15 +24,19 @@ import FormGenerator from "scenes/formGenerator";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
+
+
+  // Create the main theme based on the selected mode
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+
   return (
     <div className="app">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Routes><Route path="/home" element={<Home />} />
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/wastemanagement" element={<Wastemanagement/>}/>
