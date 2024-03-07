@@ -19,21 +19,24 @@ import {
   Select,
 } from '@mui/material';
 import Header from 'components/Header';
+import { Redirect } from 'react-router-dom';
+import MyForms from 'scenes/MyForms';
 
 const Formsofx = () => {
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
-  const [selectedForm, setSelectedForm] = useState(null);
   const [filteredForms, setFilteredForms] = useState(null);
-  const [selectedTitle, setSelectedTitle] = useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [selectedFileFieldId, setSelectedFileFieldId] = useState(null);
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [selectedTitle, setSelectedTitle] = useState('');
+  const [formData, setFormData] = useState({});
+  const [submittedFormData, setSubmittedFormData] = useState(null);
+  const [redirectToMyForms, setRedirectToMyForms] = useState(false);
 
   useEffect(() => {
-    // Retrieve selected form data from localStorage
     const formData = JSON.parse(localStorage.getItem('selectedFormData'));
     setSelectedForm(formData);
-    console.log("P:", formData);
   }, []);
 
   useEffect(() => {
@@ -45,10 +48,11 @@ const Formsofx = () => {
   }, [selectedTitle, selectedForm]);
 
   const handleSubmit = () => {
-    // Handle form submission here
-    // You can access form data from selectedForm state
-    console.log("S:", selectedForm);
+    setSubmittedFormData(formData);
+    localStorage.setItem('submittedForm', JSON.stringify([formData])); // Store submitted form data in localStorage as an array
+    setRedirectToMyForms(true);
   };
+
 
   const handleFileChange = (e, fieldId) => {
     const file = e.target.files[0];
@@ -62,12 +66,19 @@ const Formsofx = () => {
     }
   };
 
+  const handleFieldChange = (fieldId, value) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [fieldId]: value
+    }));
+  };
+
   const renderFormField = (field) => {
     switch (field.field_type) {
       case 'NUMERIC POSITIVE INTEGER':
         return (
           <TextField
-            key={field.id_code}
+            key={field.inquiry.en}
             label={field.inquiry.en}
             type="number"
             InputProps={{
@@ -76,13 +87,13 @@ const Formsofx = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={(e) => console.log(e.target.value)} // Handle value change
+            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
           />
         );
       case 'DATE':
         return (
           <TextField
-            key={field.id_code}
+            key={field.inquiry.en}
             label={field.inquiry.en}
             type="date"
             InputLabelProps={{
@@ -91,18 +102,19 @@ const Formsofx = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={(e) => console.log(e.target.value)} // Handle value change
+            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
           />
         );
       case 'YES OR NO':
         return (
-          <FormControl component="fieldset" key={field.id_code}>
+          <FormControl component="fieldset" key={field.inquiry.en}>
             <FormLabel component="legend">{field.inquiry.en}</FormLabel>
             <RadioGroup 
               row 
               aria-label={field.inquiry.en} 
               name={field.inquiry.en}
               defaultValue={field.defaultValue} // set default value if needed
+              onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
             >
               <FormControlLabel 
                 value="yes" 
@@ -119,12 +131,12 @@ const Formsofx = () => {
         );
       case 'SINGLE SELECT':
         return (
-          <FormControl key={field.id_code} variant="outlined" fullWidth margin="normal">
+          <FormControl key={field.inquiry.en} variant="outlined" fullWidth margin="normal">
             <InputLabel>{field.inquiry.en}</InputLabel>
             <Select
               label={field.inquiry.en}
-              value={''} // Set the selected value state here
-              onChange={(e) => console.log(e.target.value)} // Handle value change
+              value={formData[field.inquiry.en] || ''} // Set the selected value state here
+              onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
             >
               {/* Map through options to create Select options */}
               {field.options && field.options.map((option) => (
@@ -140,7 +152,7 @@ const Formsofx = () => {
       case 'LARGE TEXT BOX':
         return (
           <TextField 
-            key={field.id_code} 
+            key={field.inquiry.en} 
             label={field.inquiry.en} 
             variant="outlined" 
             fullWidth 
@@ -148,14 +160,16 @@ const Formsofx = () => {
             multiline={field.field_type === 'LARGE TEXT BOX'} 
             rows={field.field_type === 'LARGE TEXT BOX' ? 4 : 1} 
             type={field.field_type === 'NUMERIC FLOAT' ? 'number' : 'text'} 
+            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
           />
         );
       case 'CHECKBOX':
         return (
           <FormControlLabel
-            key={field.id_code}
+            key={field.inquiry.en}
             control={<Checkbox />}
             label={field.inquiry.en}
+            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.checked)} // Handle value change
           />
         );
       case 'IMAGE':
@@ -164,37 +178,43 @@ const Formsofx = () => {
           <div>
             <FormLabel component="legend">{field.inquiry.en}</FormLabel>
             <input
-              key={field.id_code}
+              key={field.inquiry.en}
               type="file"
               accept={field.field_type === 'IMAGE' ? 'image/*' : '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'}
-              onChange={(e) => handleFileChange(e, field.id_code)} // Pass field ID to handleFileChange
+              onChange={(e) => handleFileChange(e, field.inquiry.en)} // Pass field ID to handleFileChange
             />
-            {selectedFileFieldId === field.id_code && filePreview && (
+            {selectedFileFieldId === field.inquiry.en && filePreview && (
               <img src={filePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />
             )}
           </div>
         );
 
-        case 'TIME':
-  return (
-    <TextField
-      key={field.id_code}
-      label={field.inquiry.en}
-      type="time"
-      InputLabelProps={{
-        shrink: true,
-      }}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      onChange={(e) => console.log(e.target.value)} // Handle value change
-    />
-  );
+      case 'TIME':
+        return (
+          <TextField
+            key={field.inquiry.en}
+            label={field.inquiry.en}
+            type="time"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+          />
+        );
       // Add cases for other field types
       default:
         return null;
     }
   };
+
+  if (redirectToMyForms) {
+    return <MyForms submittedForm={submittedFormData} />;
+  }
+
+
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -239,19 +259,20 @@ const Formsofx = () => {
             <Grid container spacing={2}>
               {/* Render other form fields if fields array is not null */}
               {selectedForm[sectionKey]?.fields && selectedForm[sectionKey]?.fields.map((field) => (
-                <Grid item xs={12} sm={6} key={field.id_code}>
+                <Grid item xs={12} sm={6} key={field.inquiry.en}>
                   {renderFormField(field)}
                 </Grid>
               ))}
             </Grid>
             {/* Add more form fields as needed */}
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Submit
-            </Button>
+                Submit
+              </Button>
             
           </Card>
         </Box>
       ))}
+      {submittedFormData && <MyForms submittedForm={submittedFormData} />}
     </Box>
   );
 };

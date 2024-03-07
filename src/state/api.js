@@ -1,114 +1,63 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define your mock data functions
-const fakeUserData = (id) => ({
-  id,
-  name: `User ${id}`,
-  email: `user${id}@example.com`,
-  // Add other user properties as needed
-});
-
-const fakeProductsData = () => [
-  { id: 1, name: "Product 1", price: 10 },
-  { id: 2, name: "Product 2", price: 20 },
-  // Add other product items as needed
-];
-
-const fakeCustomersData = () => [
-  { id: 1, name: "Customer 1", email: "customer1@example.com" },
-  { id: 2, name: "Customer 2", email: "customer2@example.com" },
-  // Add other customer items as needed
-];
-
-const fakeTransactionsData = ({ page, pageSize, sort, search }) => {
-  // Generate fake transactions data based on provided parameters
-  // Example: Pagination, Sorting, Filtering
-  // Return an array of transactions
-};
-
-const fakeGeographyData = () => {
-  // Generate fake geography data
-  // Return the fake data
-};
-
-const fakeSalesData = () => {
-  // Generate fake sales data
-  // Return the fake data
-};
-
-const fakeAdminsData = () => {
-  // Generate fake admins data
-  // Return the fake data
-};
-
-const fakeUserPerformanceData = (id) => {
-  // Generate fake user performance data based on provided id
-  // Return the fake data
-};
-
-const fakeDashboardData = () => {
-  // Generate fake dashboard data
-  // Return the fake data
-};
-
-// Create your API with fake data
 export const api = createApi({
-  // Omitted other configurations for brevity
-  
-  baseQuery: () => ({
-    // Define your base query function here (not used for fake data)
-  }),
-
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000" }),
+  reducerPath: "adminApi",
+  tagTypes: [
+    "User",
+    "Waste Management",
+    "Customers",
+    "Transactions",
+    "Geography",
+    "Sales",
+    "Admins",
+    "Performance",
+    "Dashboard",
+  ],
   endpoints: (build) => ({
     getUser: build.query({
-      // Return fake user data
-      query: (id) => fakeUserData(id),
+      query: (id) => `general/user/${id}`,
       providesTags: ["User"],
     }),
     getProducts: build.query({
-      // Return fake products data
-      query: fakeProductsData,
+      query: () => "client/products",
       providesTags: ["Waste Management"],
     }),
     getCustomers: build.query({
-      // Return fake customers data
-      query: fakeCustomersData,
+      query: () => "client/customers",
       providesTags: ["Customers"],
     }),
     getTransactions: build.query({
-      // Return fake transactions data
-      query: fakeTransactionsData,
+      query: ({ page, pageSize, sort, search }) => ({
+        url: "client/transactions",
+        method: "GET",
+        params: { page, pageSize, sort, search },
+      }),
       providesTags: ["Transactions"],
     }),
     getGeography: build.query({
-      // Return fake geography data
-      query: fakeGeographyData,
+      query: () => "client/geography",
       providesTags: ["Geography"],
     }),
     getSales: build.query({
-      // Return fake sales data
-      query: fakeSalesData,
+      query: () => "sales/sales",
       providesTags: ["Sales"],
     }),
     getAdmins: build.query({
-      // Return fake admins data
-      query: fakeAdminsData,
+      query: () => "management/admins",
       providesTags: ["Admins"],
     }),
     getUserPerformance: build.query({
-      // Return fake user performance data
-      query: (id) => fakeUserPerformanceData(id),
+      query: (id) => `management/performance/${id}`,
       providesTags: ["Performance"],
     }),
     getDashboard: build.query({
-      // Return fake dashboard data
-      query: fakeDashboardData,
+      query: () => "general/dashboard",
       providesTags: ["Dashboard"],
     }),
   }),
 });
 
-// Export hooks for using the API
 export const {
   useGetUserQuery,
   useGetProductsQuery,

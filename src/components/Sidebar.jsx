@@ -63,7 +63,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "My Team",
+    text: "MyForms",
     icon: <PointOfSaleOutlined />,
   },
   {

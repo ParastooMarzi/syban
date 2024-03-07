@@ -1,86 +1,52 @@
 import React, { useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
-import { useGetSalesQuery } from "state/api";
 
 const OverviewChart = ({ isDashboard = false, view }) => {
   const theme = useTheme();
-  const { data, isLoading } = useGetSalesQuery();
 
-  const [totalSalesLine, totalUnitsLine] = useMemo(() => {
-    if (!data) return [];
+  // Generate fake data
+  const generateFakeData = () => {
+    const monthlyData = [
+      { month: "Jan", totalSales: 5000, totalUnits: 200 },
+      { month: "Feb", totalSales: 6000, totalUnits: 250 },
+      { month: "Mar", totalSales: 7500, totalUnits: 280 },
+      { month: "Apr", totalSales: 8000, totalUnits: 300 },
+      { month: "May", totalSales: 8500, totalUnits: 320 },
+      { month: "Jun", totalSales: 9000, totalUnits: 350 },
+      { month: "Jul", totalSales: 9500, totalUnits: 370 },
+      { month: "Aug", totalSales: 10000, totalUnits: 380 },
+      { month: "Sep", totalSales: 10500, totalUnits: 400 },
+      { month: "Oct", totalSales: 11000, totalUnits: 420 },
+      { month: "Nov", totalSales: 11500, totalUnits: 450 },
+      { month: "Dec", totalSales: 12000, totalUnits: 470 },
+    ];
 
-    const { monthlyData } = data;
     const totalSalesLine = {
       id: "totalSales",
-      color: theme.palette.secondary.main,
-      data: [],
+      data: monthlyData.map(({ month, totalSales }) => ({ x: month, y: totalSales })),
     };
+
     const totalUnitsLine = {
       id: "totalUnits",
-      color: theme.palette.secondary[600],
-      data: [],
+      data: monthlyData.map(({ month, totalUnits }) => ({ x: month, y: totalUnits })),
     };
 
-    Object.values(monthlyData).reduce(
-      (acc, { month, totalSales, totalUnits }) => {
-        const curSales = acc.sales + totalSales;
-        const curUnits = acc.units + totalUnits;
+    return [totalSalesLine, totalUnitsLine];
+  };
 
-        totalSalesLine.data = [
-          ...totalSalesLine.data,
-          { x: month, y: curSales },
-        ];
-        totalUnitsLine.data = [
-          ...totalUnitsLine.data,
-          { x: month, y: curUnits },
-        ];
+  const [totalSalesLine, totalUnitsLine] = useMemo(() => generateFakeData(), []); 
 
-        return { sales: curSales, units: curUnits };
-      },
-      { sales: 0, units: 0 }
-    );
-
-    return [[totalSalesLine], [totalUnitsLine]];
-  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!data || isLoading) return "Loading...";
+  // Ensure data is not empty or undefined
+  if (!totalSalesLine || !totalUnitsLine) {
+    return null; // Or display a loading indicator or error message
+  }
 
   return (
     <ResponsiveLine
-      data={view === "sales" ? totalSalesLine : totalUnitsLine}
+      data={[view === "sales" ? totalSalesLine : totalUnitsLine]}
       theme={{
-        axis: {
-          domain: {
-            line: {
-              stroke: theme.palette.secondary[200],
-            },
-          },
-          legend: {
-            text: {
-              fill: theme.palette.secondary[200],
-            },
-          },
-          ticks: {
-            line: {
-              stroke: theme.palette.secondary[200],
-              strokeWidth: 1,
-            },
-            text: {
-              fill: theme.palette.secondary[200],
-            },
-          },
-        },
-        legends: {
-          text: {
-            fill: theme.palette.secondary[200],
-          },
-        },
-        tooltip: {
-          container: {
-            color: theme.palette.primary.main,
-          },
-        },
+        // Your theme configuration
       }}
       margin={{ top: 20, right: 50, bottom: 50, left: 70 }}
       xScale={{ type: "point" }}
@@ -97,29 +63,10 @@ const OverviewChart = ({ isDashboard = false, view }) => {
       axisTop={null}
       axisRight={null}
       axisBottom={{
-        format: (v) => {
-          if (isDashboard) return v.slice(0, 3);
-          return v;
-        },
-        orient: "bottom",
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? "" : "Month",
-        legendOffset: 36,
-        legendPosition: "middle",
+        // Your axis bottom configuration
       }}
       axisLeft={{
-        orient: "left",
-        tickValues: 5,
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard
-          ? ""
-          : `Total ${view === "sales" ? "Revenue" : "Units"} for Year`,
-        legendOffset: -60,
-        legendPosition: "middle",
+        // Your axis left configuration
       }}
       enableGridX={false}
       enableGridY={false}

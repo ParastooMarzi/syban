@@ -1,13 +1,22 @@
 import React from "react";
 import { Box, useTheme } from "@mui/material";
-import { useGetGeographyQuery } from "state/api";
 import Header from "components/Header";
 import { ResponsiveChoropleth } from "@nivo/geo";
 import { geoData } from "state/geoData";
+import { scaleQuantize } from "d3-scale";
 
 const Geography = () => {
   const theme = useTheme();
-  const { data } = useGetGeographyQuery();
+  const fakeData = [
+    { id: 1, name: "Location 1", value: 165 },
+    { id: 2, name: "Location 2", value: 180 },
+    { id: 3, name: "Location 3", value: 60 },
+  ];
+
+  // Create a quantize scale based on the data values
+  const colorScale = scaleQuantize()
+    .domain([0, 200])
+    .range(["#fee5d9", "#fcae91", "#fb6a4a", "#de2d26"]); 
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -18,34 +27,34 @@ const Geography = () => {
         border={`1px solid ${theme.palette.secondary[200]}`}
         borderRadius="4px"
       >
-        {data ? (
+        {fakeData ? (
           <ResponsiveChoropleth
-            data={data}
+            data={fakeData}
             theme={{
               axis: {
                 domain: {
                   line: {
-                    stroke: theme.palette.secondary[200],
+                    stroke: theme.palette.secondary[500],
                   },
                 },
                 legend: {
                   text: {
-                    fill: theme.palette.secondary[200],
+                    fill: theme.palette.secondary[500],
                   },
                 },
                 ticks: {
                   line: {
-                    stroke: theme.palette.secondary[200],
+                    stroke: theme.palette.secondary[500],
                     strokeWidth: 1,
                   },
                   text: {
-                    fill: theme.palette.secondary[200],
+                    fill: theme.palette.secondary[500],
                   },
                 },
               },
               legends: {
                 text: {
-                  fill: theme.palette.secondary[200],
+                  fill: theme.palette.secondary[500],
                 },
               },
               tooltip: {
@@ -56,7 +65,8 @@ const Geography = () => {
             }}
             features={geoData.features}
             margin={{ top: 0, right: 0, bottom: 0, left: -50 }}
-            domain={[0, 60]}
+            colors={colorScale}
+            domain={[0, 200]}
             unknownColor="#666666"
             label="properties.name"
             valueFormat=".2s"
@@ -76,14 +86,14 @@ const Geography = () => {
                 itemWidth: 94,
                 itemHeight: 18,
                 itemDirection: "left-to-right",
-                itemTextColor: theme.palette.secondary[200],
+                itemTextColor: theme.palette.secondary[500],
                 itemOpacity: 0.85,
                 symbolSize: 18,
                 effects: [
                   {
                     on: "hover",
                     style: {
-                      itemTextColor: theme.palette.background.alt,
+                      itemTextColor: "#FFC524",
                       itemOpacity: 1,
                     },
                   },

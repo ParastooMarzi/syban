@@ -21,7 +21,7 @@ import OverviewChart from "components/OverviewChart";
 import { useGetDashboardQuery } from "state/api";
 import StatBox from "components/StatBox";
 
-const Dashboard = () => {
+const Dashboard = () => { 
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const { data, isLoading } = useGetDashboardQuery();
@@ -44,14 +44,14 @@ const Dashboard = () => {
     },
     {
       field: "products",
-      headerName: "# of Products",
+      headerName: "# of Forms",
       flex: 0.5,
       sortable: false,
       renderCell: (params) => params.value.length,
     },
     {
       field: "cost",
-      headerName: "Cost",
+      headerName: "Form Group",
       flex: 1,
       renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
     },
@@ -187,7 +187,7 @@ const Dashboard = () => {
               backgroundColor: theme.palette.background.alt,
             },
             "& .MuiDataGrid-footerContainer": {
-              backgroundColor: theme.palette.background.alt,
+              backgroundColor: "#FFC524",
               color: theme.palette.secondary[100],
               borderTop: "none",
             },
