@@ -177,7 +177,7 @@ const FormGenerator = () => {
     try {
       const formId = 'd05b8d22-d8c4-11ee-b5ef-0242ac170005'; // Your form ID
   
-      const response = await axios.put('http://185.110.189.96:8000/api/version=1/approve/', {
+      const response = await axios.put('https://185.110.189.96:8000/api/version=1/approve/', {
         form_id: formId // Add form_id to the request body
       }, {
         headers: {

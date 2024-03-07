@@ -19,7 +19,7 @@ const CRMAndFinance = () => {
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await axios.get('http://185.110.189.96:8000/api/version%3D1/list-forms/Waste_Management/');
+        const response = await axios.get('https://185.110.189.96:8000/api/version%3D1/list-forms/Waste_Management/');
         setForms(response.data);
         if (response.data && response.data.length > 0) {
           setSelectedFormName(response.data[0].name.en);
@@ -34,7 +34,7 @@ const CRMAndFinance = () => {
 
   const fetchFormDetails = async (ref) => {
     try {
-      const response = await axios.get(`http://185.110.189.96:8000/api/version%3D1/forms/${ref}`);
+      const response = await axios.get(`https://185.110.189.96:8000/api/version%3D1/forms/${ref}`);
       setSelectedForm(response.data);
       
       localStorage.setItem('selectedFormData', JSON.stringify(response.data)); // Store selected form data in localStorage
