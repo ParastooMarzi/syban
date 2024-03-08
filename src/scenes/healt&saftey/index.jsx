@@ -12,7 +12,7 @@ const Health_and_safety = () => {
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await axios.get('https://185.110.189.96:8000/api/version%3D1/list-forms/Waste_Management/');
+        const response = await axios.get('https://api.syban-datacloud.com/api/version%3D1/list-forms/Waste_Management/');
         setForms(response.data);
       } catch (error) {
         console.error('Error fetching forms:', error);
