@@ -3,11 +3,14 @@ import axios from 'axios';
 import { Box, Button, Card, CardActions, CardContent, Collapse, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import Header from 'components/Header';
+import { useTranslation } from 'react-i18next';
 
 const Health_and_safety = () => {
+  const { t } = useTranslation();
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
   const [forms, setForms] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const fetchForms = async () => {
@@ -24,11 +27,9 @@ const Health_and_safety = () => {
 
   const healthForms = forms.filter(form => form.group === 'Health_and_Safety');
 
-  const [isExpanded, setIsExpanded] = useState(false);
-
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="HEALTH AND SAFETY" subtitle="Forms of health and safety" />
+      <Header title={t('healthAndSafetyTitle')} subtitle={t('formsOfHealthAndSafety')} />
 
       <Box
         mt="20px"
@@ -56,9 +57,9 @@ const Health_and_safety = () => {
                 color={theme.palette.secondary[700]}
                 gutterBottom
               >
-                {form.name.en}
+                {form.name[t.language] || form.name.en}
               </Typography>
-              <Typography variant="body2">{form.description.en}</Typography>
+              <Typography variant="body2">{form.description[t.language] || form.description.en}</Typography>
               <Typography variant="body2">Reference: {form.ref}</Typography>
             </CardContent>
             <CardActions>
@@ -67,7 +68,7 @@ const Health_and_safety = () => {
                 size="small"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
-                See More
+                {t('seeMore')}
               </Button>
             </CardActions>
             <Collapse

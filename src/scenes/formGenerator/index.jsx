@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Box, 
   Typography, 
@@ -31,6 +32,7 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 }));
 
 const FormGenerator = () => {
+  const { t, i18n } = useTranslation();
   const [formTitle, setFormTitle] = useState('');
   const [formFields, setFormFields] = useState([]);
   const [filePreview, setFilePreview] = useState(null);
@@ -214,10 +216,7 @@ const FormGenerator = () => {
           ))}
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <SubmitButton variant="contained" color="primary" type="submit">
-              Finalize
-            </SubmitButton>
-            <SubmitButton variant="contained" color="secondary" onClick={handleApproveClick}>
-              Approve
+              {t("finalize")}
             </SubmitButton>
           </div>
         </form>
@@ -229,8 +228,7 @@ const FormGenerator = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
-        <Header title="Form Generator" subtitle="Create your own form" />
-        
+        <Header title={t('formGeneratorTitle')} subtitle={t('createYourOwnForm')} />
         <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <Select
             value=""
@@ -238,25 +236,26 @@ const FormGenerator = () => {
             displayEmpty
           >
             <MenuItem value="" disabled>
-              Add Field
+              {t('addField')}
             </MenuItem>
-            <MenuItem value="NUMERIC POSITIVE INTEGER">Numeric Positive Integer</MenuItem>
-            <MenuItem value="DATE">Date</MenuItem>
-            <MenuItem value="YES OR NO">Yes or No</MenuItem>
-            <MenuItem value="SINGLE SELECT">Single Select</MenuItem>
-            <MenuItem value="SMALL TEXT BOX">Small Text Box</MenuItem>
-            <MenuItem value="NUMERIC FLOAT">Numeric Float</MenuItem>
-            <MenuItem value="LARGE TEXT BOX">Large Text Box</MenuItem>
-            <MenuItem value="CHECKBOX">Checkbox</MenuItem>
-            <MenuItem value="IMAGE">Image</MenuItem>
-            <MenuItem value="DOCUMENT">Document</MenuItem>
-            <MenuItem value="TIME">Time</MenuItem>
+            {/* Translation for menu items */}
+            <MenuItem value="NUMERIC POSITIVE INTEGER">{t('numericPositiveInteger')}</MenuItem>
+            <MenuItem value="DATE">{t('date')}</MenuItem>
+            <MenuItem value="YES OR NO">{t('yesOrNo')}</MenuItem>
+            <MenuItem value="SINGLE SELECT">{t('singleSelect')}</MenuItem>
+            <MenuItem value="SMALL TEXT BOX">{t('smallTextBox')}</MenuItem>
+            <MenuItem value="NUMERIC FLOAT">{t('numericFloat')}</MenuItem>
+            <MenuItem value="LARGE TEXT BOX">{t('largeTextBox')}</MenuItem>
+            <MenuItem value="CHECKBOX">{t('checkbox')}</MenuItem>
+            <MenuItem value="IMAGE">{t('image')}</MenuItem>
+            <MenuItem value="DOCUMENT">{t('document')}</MenuItem>
+            <MenuItem value="TIME">{t('time')}</MenuItem>
           </Select>
         </FormControl>
       </FlexBetween>
       <Box mt={2}>
         <TextField
-          label="Form Title"
+          label={t("formTitleLabel")}
           value={formTitle}
           onChange={(e) => setFormTitle(e.target.value)}
           variant="outlined"
@@ -268,7 +267,7 @@ const FormGenerator = () => {
         {formFields.map((field, index) => (
           <Box key={index} display="flex-between" alignItems="center" mt={3}>
             <TextField
-              label={`Field Label ${index + 1}`}
+              label={t('fieldLabel')}
               value={field.label}
               onChange={(e) => handleChangeFieldLabel(index, e.target.value)}
               variant="outlined"
@@ -280,7 +279,7 @@ const FormGenerator = () => {
                 {field.values.map((value, valueIndex) => (
                   <TextField
                     key={valueIndex}
-                    label={`Value ${valueIndex + 1}`}
+                    label={t("value")}
                     value={value}
                     onChange={(e) => handleChangeFieldValue(index, valueIndex, e.target.value)}
                     variant="outlined"
@@ -292,7 +291,7 @@ const FormGenerator = () => {
                   variant="primary" color="contained" 
                   onClick={() => handleAddFieldValue(index)}
                 >
-                  Add Value
+                  {t("addValue")}
                 </Button>
               </>
             )}
@@ -303,17 +302,17 @@ const FormGenerator = () => {
                   onChange={(e) => handleChangeFieldRequired(index, e.target.checked)}
                 />
               }
-              label="Required"
+              label={t("required")}
             />
             <Button variant="outlined" color="error" onClick={() => handleRemoveField(index)}>
-              Remove
+              {t("remove")}
             </Button>
           </Box>
         ))}
       </Box>
       <Box mt={3}>
         <Button variant="contained" color="primary" onClick={handlePreviewForm}>
-          Preview Form
+          {t('previewForm')}
         </Button>
       </Box>
       {previewForm && (

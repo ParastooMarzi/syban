@@ -1,3 +1,4 @@
+// Navbar.jsx
 import React, { useState } from "react";
 import {
   LightModeOutlined,
@@ -23,15 +24,23 @@ import {
   MenuItem,
   useTheme,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { t, i18n } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
+
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    handleClose();
+  };
 
   return (
     <AppBar
@@ -47,17 +56,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             <MenuIcon />
           </IconButton>
-          <FlexBetween
-            backgroundColor={theme.palette.background.alt}
-            borderRadius="9px"
-            gap="3rem"
-            p="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
+          {/* ... other left-side components */}
         </FlexBetween>
 
         {/* RIGHT SIDE */}
@@ -73,6 +72,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             <SettingsOutlined sx={{ fontSize: "25px" }} />
           </IconButton>
 
+          {/* Language Switcher */}
           <FlexBetween>
             <Button
               onClick={handleClick}
@@ -84,30 +84,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 gap: "1rem",
               }}
             >
-              <Box
-                component="img"
-                alt="profile"
-                src={profileImage}
-                height="32px"
-                width="32px"
-                borderRadius="50%"
-                sx={{ objectFit: "cover" }}
-              />
-              <Box textAlign="left">
-                <Typography
-                  fontWeight="bold"
-                  fontSize="0.85rem"
-                  sx={{ color: theme.palette.secondary[100] }}
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  fontSize="0.75rem"
-                  sx={{ color: theme.palette.secondary[200] }}
-                >
-                  {user.occupation}
-                </Typography>
-              </Box>
+              {/* ... existing profile image and user info */}
               <ArrowDropDownOutlined
                 sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
               />
@@ -118,7 +95,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
-              <MenuItem onClick={handleClose}>Log Out</MenuItem>
+              <MenuItem onClick={() => changeLanguage("en")}>English</MenuItem>
+              <MenuItem onClick={() => changeLanguage("fa")}>فارسی</MenuItem>
             </Menu>
           </FlexBetween>
         </FlexBetween>

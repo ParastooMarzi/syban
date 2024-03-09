@@ -20,38 +20,40 @@ import BreakdownChart from "components/BreakdownChart";
 import OverviewChart from "components/OverviewChart";
 import { useGetDashboardQuery } from "state/api";
 import StatBox from "components/StatBox";
+import { useTranslation } from 'react-i18next';
 
-const Dashboard = () => { 
+const Dashboard = () => {
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const { data, isLoading } = useGetDashboardQuery();
+  const { t } = useTranslation();
 
   const columns = [
     {
       field: "_id",
-      headerName: "ID",
+      headerName: t("ID"),
       flex: 1,
     },
     {
       field: "userId",
-      headerName: "User ID",
+      headerName: t("USER_ID"),
       flex: 1,
     },
     {
       field: "createdAt",
-      headerName: "CreatedAt",
+      headerName: t("CREATED_AT"),
       flex: 1,
     },
     {
       field: "products",
-      headerName: "# of Forms",
+      headerName: t("NUM_FORMS"),
       flex: 0.5,
       sortable: false,
       renderCell: (params) => params.value.length,
     },
     {
       field: "cost",
-      headerName: "Form Group",
+      headerName: t("FORM_GROUP"),
       flex: 1,
       renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
     },
@@ -60,7 +62,7 @@ const Dashboard = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
-        <Header title="DASHBOARD" subtitle="Welcome to Syban!" />
+        <Header title={t("DASHBOARD_TITLE")} subtitle={t("WELCOME_SYBAN")} />
 
         <Box>
           
@@ -94,7 +96,7 @@ const Dashboard = () => {
         color={theme.palette.secondary[500]}
       >
         <Typography variant="h5" mt={2} sx={{ marginBottom: { xs: 2, md: 0 }} }>
-          FORM GENERATOR
+          {t("FORM_GENERATOR")}
         </Typography>
         <a href="/formgenerator" style={{ textDecoration: "none", margin: { xs: "10px 0", md: "0 10px" } }}>
           <Button
@@ -115,7 +117,7 @@ const Dashboard = () => {
               },
             }}
           >
-            JOIN NOW
+            {t("JOIN_NOW")}
           </Button>
         </a>
       </Box>
@@ -123,17 +125,21 @@ const Dashboard = () => {
     
   />
         <StatBox
-          title="Today's Forms"
-          
-          value={data && data.todayStats.totalSales}
-          increase="+21%"
-          description="Since last month"
-          icon={
-            <PointOfSale
-              sx={{ color:"#FFC524", fontSize: "26px" }}
-            />
-          }
-        />
+  title={
+    <Typography variant="h5" sx={{ color: "black" }}>
+      {t("TODAYS_FORMS")}
+    </Typography>
+  }
+  value={data && data.todayStats.totalSales}
+  increase="+21%"
+  description={t("SINCE_LAST_MONTH")}
+  icon={
+    <PointOfSale
+      sx={{ color: "#FFC524", fontSize: "26px" }}
+    />
+  }
+/>
+
         <Box
           gridColumn="span 8"
           gridRow="span 2"
@@ -144,27 +150,36 @@ const Dashboard = () => {
           <OverviewChart view="sales" isDashboard={true} />
         </Box>
         <StatBox
-          title="Monthly Forms"
-          value={data && data.thisMonthStats.totalSales}
-          increase="+5%"
-          description="Since last month"
-          icon={
-            <PersonAdd
-              sx={{  color:"#FFC524", fontSize: "26px" }}
-            />
-          }
-        />
-        <StatBox
-          title="Yearly Forms"
-          value={data && data.yearlySalesTotal}
-          increase="+43%"
-          description="Since last month"
-          icon={
-            <Traffic
-              sx={{  color:"#FFC524", fontSize: "26px" }}
-            />
-          }
-        />
+  title={
+    <Typography variant="h5" sx={{ color: "black" }}>
+      {t("MONTHLY_FORMS")}
+    </Typography>
+  }
+  value={data && data.thisMonthStats.totalSales}
+  increase="+5%"
+  description={t("SINCE_LAST_MONTH")}
+  icon={
+    <PersonAdd
+      sx={{ color: "#FFC524", fontSize: "26px" }}
+    />
+  }
+/>
+<StatBox
+  title={
+    <Typography variant="h5" sx={{ color: "black" }}>
+      {t("YEARLY_FORMS")}
+    </Typography>
+  }
+  value={data && data.yearlySalesTotal}
+  increase="+43%"
+  description={t("SINCE_LAST_MONTH")}
+  icon={
+    <Traffic
+      sx={{ color: "#FFC524", fontSize: "26px" }}
+    />
+  }
+/>
+
 
         {/* ROW 2 */}
         <Box
@@ -210,17 +225,17 @@ const Dashboard = () => {
           p="1.5rem"
           borderRadius="0.55rem"
         >
-          <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>
-            Forms Categories
+          <Typography variant="h6" sx={{ color: theme.palette.secondary[500] }}>
+            {t("FORMS_CATEGORIES")}
           </Typography>
           <BreakdownChart isDashboard={true} />
           <Typography
             p="0 0.6rem"
             fontSize="0.8rem"
-            sx={{ color: theme.palette.secondary[200] }}
+            marginTop={5}
+            sx={{ color: theme.palette.secondary[500] }}
           >
-            Breakdown of real states and information via category for revenue
-            made for this year and total sales.
+            {t("BREAKDOWN_DESCRIPTION")}
           </Typography>
         </Box>
       </Box>

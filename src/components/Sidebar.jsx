@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Divider,
@@ -24,73 +25,12 @@ import {
   PointOfSaleOutlined,
   TodayOutlined,
   CalendarMonthOutlined,
-  AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
   PieChartOutlined,
+  AdminPanelSettingsOutlined,
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import profileImage from "assets/profile.jpeg";
-
-const navItems = [
-  {
-    text: "Dashboard",
-    icon: <HomeOutlined />,
-  },
-  {
-    text: "Client Facing",
-    icon: null,
-  },
-  {
-    text: "Wastemanagement",
-    icon: <ShoppingCartOutlined />,
-  },
-  {
-    text: "Health_and_Safety",
-    icon: <Groups2Outlined />,
-  },
-  {
-    text: "CRM_and_Finance",
-    icon: <ReceiptLongOutlined />,
-  },
-  {
-    text: "Geography",
-    icon: <PublicOutlined />,
-  },
-  {
-    text: "Options",
-    icon: null,
-  },
-  {
-    text: "MyForms",
-    icon: <PointOfSaleOutlined />,
-  },
-  {
-    text: "Daily",
-    icon: <TodayOutlined />,
-  },
-  {
-    text: "Monthly",
-    icon: <CalendarMonthOutlined />,
-  },
-  {
-    text: "Breakdown",
-    icon: <PieChartOutlined />,
-  },
-  {
-    text: "Management",
-    icon: null,
-  },
-  {
-    text: "Admin",
-    icon: <AdminPanelSettingsOutlined />,
-  },
-  {
-    text: "Performance",
-    icon: <TrendingUpOutlined />,
-  },
-];
 
 const Sidebar = ({
   user,
@@ -99,6 +39,7 @@ const Sidebar = ({
   setIsSidebarOpen,
   isNonMobile,
 }) => {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
   const navigate = useNavigate();
@@ -107,6 +48,61 @@ const Sidebar = ({
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]);
+
+  const navItems = [
+    {
+      text: "Dashboard",
+      icon: <HomeOutlined />,
+    },
+    {
+      text: "Client Facing",
+      icon: null,
+    },
+    {
+      text: "Wastemanagement",
+      icon: <ShoppingCartOutlined />,
+    },
+    {
+      text: "Health_and_Safety",
+      icon: <Groups2Outlined />,
+    },
+    {
+      text: "CRM_and_Finance",
+      icon: <ReceiptLongOutlined />,
+    },
+    {
+      text: "Geography",
+      icon: <PublicOutlined />,
+    },
+    {
+      text: "Options",
+      icon: null,
+    },
+    {
+      text: "MyForms",
+      icon: <PointOfSaleOutlined />,
+    },
+    {
+      text: "Daily",
+      icon: <TodayOutlined />,
+    },
+    {
+      text: "Monthly",
+      icon: <CalendarMonthOutlined />,
+    },
+    {
+      text: "Breakdown",
+      icon: <PieChartOutlined />,
+    },
+    {
+      text: "Management",
+      icon: null,
+    },
+    {
+      text: "Admin",
+      icon: <AdminPanelSettingsOutlined />,
+    },
+  ];
 
   return (
     <Box component="nav">
@@ -131,8 +127,8 @@ const Sidebar = ({
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color={theme.palette.secondary[400]}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
-                  <Typography variant="h4" fontWeight="bold" color="#FFC524" >
-                    SYBAN
+                  <Typography variant="h4" fontWeight="bold" color="#FFC524">
+                    {t("SYBAN")}
                   </Typography>
                 </Box>
                 {!isNonMobile && (
@@ -147,7 +143,7 @@ const Sidebar = ({
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
-                      {text}
+                      {t(text)}
                     </Typography>
                   );
                 }
@@ -182,7 +178,7 @@ const Sidebar = ({
                       >
                         {icon}
                       </ListItemIcon>
-                      <ListItemText primary={text} />
+                      <ListItemText primary={t(text)} />
                       {active === lcText && (
                         <ChevronRightOutlined sx={{ ml: "auto" }} />
                       )}

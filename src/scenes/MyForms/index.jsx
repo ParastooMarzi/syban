@@ -6,10 +6,12 @@ import {
   Modal,
   TextField,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { DataGrid } from '@mui/x-data-grid';
 import CustomColumnMenu from 'components/DataGridCustomColumnMenu';
 
 const MyForms = () => {
+  const { t, i18n } = useTranslation();
   const [submittedFormData, setSubmittedFormData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -48,29 +50,29 @@ const MyForms = () => {
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    { field: 'ref', headerName: 'Form Group', flex: 1 },
-    { field: 'name', headerName: 'Form Title', flex: 0.5 },
+    { field: 'id', headerName: t("USER_ID"), flex: 0.5 },
+    { field: 'ref', headerName: t("FORM_GROUP"), flex: 1 },
+    { field: 'name', headerName: t("formTitleLabel"), flex: 0.5 },
     { 
       field: 'deleteForm', 
-      headerName: 'Delete Form', 
+      headerName: t("deleteForm"), 
       flex: 0.5,
       renderCell: (params) => (
         <Button variant="outlined" color="error" onClick={() => {
           setSelectedRow(params.row);
           setDeleteModalOpen(true);
         }}>
-          Delete
+          {t("delete")}
         </Button>
       ),
     },
     { 
       field: 'finalize', 
-      headerName: 'Finalize', 
+      headerName: t("finalizeForm"), 
       flex: 0.4,
       renderCell: () => (
         <Button variant="contained" color="primary" onClick={handleFinalize}>
-          Finalize
+          {t("finalize")}
         </Button>
       ),
     },
@@ -107,14 +109,14 @@ const MyForms = () => {
           }}
         >
           <Typography id="delete-form-modal-description" variant="h6" gutterBottom>
-            Are you sure you want to delete this form?
+            {t("sureDelete")}
           </Typography>
           <Box display="flex" justifyContent="flex-end" mt={2}>
             <Button variant="outlined" onClick={() => setDeleteModalOpen(false)}>
-              No
+              {t("no")}
             </Button>
             <Button variant="contained" color="error" onClick={handleDeleteRow} sx={{ ml: 2 }}>
-              Yes
+              {t("yes")}
             </Button>
           </Box>
         </Box>
@@ -139,7 +141,7 @@ const MyForms = () => {
           }}
         >
           <Typography id="finalize-form-modal-description" variant="h6" gutterBottom>
-            Enter Approver Name
+            {t("EnterApproverName")}
           </Typography>
           <TextField
             label="Approver Name"
@@ -151,10 +153,10 @@ const MyForms = () => {
           />
           <Box display="flex" justifyContent="flex-end" mt={2}>
             <Button variant="outlined" onClick={() => setFinalizeModalOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button variant="contained" color="primary" onClick={handleApprove} sx={{ ml: 2 }}>
-              Approve
+              {t("send")}
             </Button>
           </Box>
         </Box>

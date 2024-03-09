@@ -21,8 +21,10 @@ import {
 import Header from 'components/Header';
 import { Redirect } from 'react-router-dom';
 import MyForms from 'scenes/MyForms';
+import { useTranslation } from 'react-i18next';
 
 const Formsofx = () => {
+  const { t, i18n } = useTranslation();
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
   const [filteredForms, setFilteredForms] = useState(null);
@@ -42,17 +44,16 @@ const Formsofx = () => {
   useEffect(() => {
     if (selectedForm) {
       // Filter forms by title
-      const filtered = Object.keys(selectedForm).filter(sectionKey => selectedForm[sectionKey]?.section_data?.title?.en === selectedTitle);
+      const filtered = Object.keys(selectedForm).filter(sectionKey => selectedForm[sectionKey]?.section_data?.title?.[i18n.language] === selectedTitle);
       setFilteredForms(filtered);
     }
-  }, [selectedTitle, selectedForm]);
+  }, [selectedTitle, selectedForm, i18n.language]);
 
   const handleSubmit = () => {
     setSubmittedFormData(formData);
     localStorage.setItem('submittedForm', JSON.stringify([formData])); // Store submitted form data in localStorage as an array
     setRedirectToMyForms(true);
   };
-
 
   const handleFileChange = (e, fieldId) => {
     const file = e.target.files[0];
@@ -78,8 +79,8 @@ const Formsofx = () => {
       case 'NUMERIC POSITIVE INTEGER':
         return (
           <TextField
-            key={field.inquiry.en}
-            label={field.inquiry.en}
+            key={field.inquiry[i18n.language]}
+            label={field.inquiry[i18n.language]}
             type="number"
             InputProps={{
               inputProps: { min: 0, step: 1 }, // Allow only positive integers
@@ -87,14 +88,14 @@ const Formsofx = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+            onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.value)} // Handle value change
           />
         );
       case 'DATE':
         return (
           <TextField
-            key={field.inquiry.en}
-            label={field.inquiry.en}
+            key={field.inquiry[i18n.language]}
+            label={field.inquiry[i18n.language]}
             type="date"
             InputLabelProps={{
               shrink: true,
@@ -102,41 +103,41 @@ const Formsofx = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+            onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.value)} // Handle value change
           />
         );
       case 'YES OR NO':
         return (
-          <FormControl component="fieldset" key={field.inquiry.en}>
-            <FormLabel component="legend">{field.inquiry.en}</FormLabel>
+          <FormControl component="fieldset" key={field.inquiry[i18n.language]}>
+            <FormLabel component="legend">{field.inquiry[i18n.language]}</FormLabel>
             <RadioGroup 
               row 
-              aria-label={field.inquiry.en} 
-              name={field.inquiry.en}
+              aria-label={field.inquiry[i18n.language]} 
+              name={field.inquiry[i18n.language]}
               defaultValue={field.defaultValue} // set default value if needed
-              onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+              onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.value)} // Handle value change
             >
               <FormControlLabel 
                 value="yes" 
                 control={<Radio />} 
-                label="Yes" 
+                label={t('Yes')} 
               />
               <FormControlLabel 
                 value="no" 
                 control={<Radio />} 
-                label="No" 
+                label={t('No')} 
               />
             </RadioGroup>
           </FormControl>
         );
       case 'SINGLE SELECT':
         return (
-          <FormControl key={field.inquiry.en} variant="outlined" fullWidth margin="normal">
-            <InputLabel>{field.inquiry.en}</InputLabel>
+          <FormControl key={field.inquiry[i18n.language]} variant="outlined" fullWidth margin="normal">
+            <InputLabel>{field.inquiry[i18n.language]}</InputLabel>
             <Select
-              label={field.inquiry.en}
-              value={formData[field.inquiry.en] || ''} // Set the selected value state here
-              onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+              label={field.inquiry[i18n.language]}
+              value={formData[field.inquiry[i18n.language]] || ''} // Set the selected value state here
+              onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.value)} // Handle value change
             >
               {/* Map through options to create Select options */}
               {field.options && field.options.map((option) => (
@@ -152,38 +153,38 @@ const Formsofx = () => {
       case 'LARGE TEXT BOX':
         return (
           <TextField 
-            key={field.inquiry.en} 
-            label={field.inquiry.en} 
+            key={field.inquiry[i18n.language]} 
+            label={field.inquiry[i18n.language]} 
             variant="outlined" 
             fullWidth 
             margin="normal" 
             multiline={field.field_type === 'LARGE TEXT BOX'} 
             rows={field.field_type === 'LARGE TEXT BOX' ? 4 : 1} 
             type={field.field_type === 'NUMERIC FLOAT' ? 'number' : 'text'} 
-            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+            onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.value)} // Handle value change
           />
         );
       case 'CHECKBOX':
         return (
           <FormControlLabel
-            key={field.inquiry.en}
+            key={field.inquiry[i18n.language]}
             control={<Checkbox />}
-            label={field.inquiry.en}
-            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.checked)} // Handle value change
+            label={field.inquiry[i18n.language]}
+            onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.checked)} // Handle value change
           />
         );
       case 'IMAGE':
       case 'DOCUMENT':
         return (
           <div>
-            <FormLabel component="legend">{field.inquiry.en}</FormLabel>
+            <FormLabel component="legend">{field.inquiry[i18n.language]}</FormLabel>
             <input
-              key={field.inquiry.en}
+              key={field.inquiry[i18n.language]}
               type="file"
               accept={field.field_type === 'IMAGE' ? 'image/*' : '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'}
-              onChange={(e) => handleFileChange(e, field.inquiry.en)} // Pass field ID to handleFileChange
+              onChange={(e) => handleFileChange(e, field.inquiry[i18n.language])} // Pass field ID to handleFileChange
             />
-            {selectedFileFieldId === field.inquiry.en && filePreview && (
+            {selectedFileFieldId === field.inquiry[i18n.language] && filePreview && (
               <img src={filePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />
             )}
           </div>
@@ -192,8 +193,8 @@ const Formsofx = () => {
       case 'TIME':
         return (
           <TextField
-            key={field.inquiry.en}
-            label={field.inquiry.en}
+            key={field.inquiry[i18n.language]}
+            label={field.inquiry[i18n.language]}
             type="time"
             InputLabelProps={{
               shrink: true,
@@ -201,7 +202,7 @@ const Formsofx = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={(e) => handleFieldChange(field.inquiry.en, e.target.value)} // Handle value change
+            onChange={(e) => handleFieldChange(field.inquiry[i18n.language], e.target.value)} // Handle value change
           />
         );
       // Add cases for other field types
@@ -214,8 +215,6 @@ const Formsofx = () => {
     return <MyForms submittedForm={submittedFormData} />;
   }
 
-
-
   return (
     <Box m="1.5rem 2.5rem">
       <Header title={`FORMS OF ${selectedForm && selectedForm[Object.keys(selectedForm)[0]]?.section_data?.form || ""}`} />
@@ -224,7 +223,7 @@ const Formsofx = () => {
         {/* Select input for choosing title */}
         <TextField
           select
-          label="Select Title"
+          label={t('Select Title')}
           value={selectedTitle}
           onChange={(e) => setSelectedTitle(e.target.value)}
           variant="outlined"
@@ -233,8 +232,8 @@ const Formsofx = () => {
         >
           {/* Map through titles to create options */}
           {selectedForm && Object.keys(selectedForm).map((sectionKey) => (
-            <MenuItem key={sectionKey} value={selectedForm[sectionKey]?.section_data?.title?.en}>
-              {selectedForm[sectionKey]?.section_data?.title?.en}
+            <MenuItem key={sectionKey} value={selectedForm[sectionKey]?.section_data?.title?.[i18n.language]}>
+              {selectedForm[sectionKey]?.section_data?.title?.[i18n.language]}
             </MenuItem>
           ))}
         </TextField>
@@ -254,21 +253,20 @@ const Formsofx = () => {
             }}
           >
             <Typography variant="h4">
-              {selectedForm[sectionKey]?.section_data?.title?.en || "Title Not Available"}
+              {selectedForm[sectionKey]?.section_data?.title?.[i18n.language] || "Title Not Available"}
             </Typography>
             <Grid container spacing={2}>
               {/* Render other form fields if fields array is not null */}
               {selectedForm[sectionKey]?.fields && selectedForm[sectionKey]?.fields.map((field) => (
-                <Grid item xs={12} sm={6} key={field.inquiry.en}>
+                <Grid item xs={12} sm={6} key={field.inquiry[i18n.language]}>
                   {renderFormField(field)}
                 </Grid>
               ))}
             </Grid>
             {/* Add more form fields as needed */}
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-                Submit
+                {t('Submit')}
               </Button>
-            
           </Card>
         </Box>
       ))}

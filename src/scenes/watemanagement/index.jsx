@@ -7,8 +7,10 @@ import { FaEye, FaRegEdit } from 'react-icons/fa';
 import { MdOutlineLibraryAdd } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import Formsofx from 'formComponents';
+import { useTranslation } from 'react-i18next';
 
 const WasteManagement = () => {
+  const { t, i18n } = useTranslation();
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
   const navigate = useNavigate();
@@ -20,17 +22,18 @@ const WasteManagement = () => {
     const fetchForms = async () => {
       try {
         const response = await axios.get('https://api.syban-datacloud.com/api/version%3D1/list-forms/Waste_Management/');
-        setForms(response.data);
-        if (response.data && response.data.length > 0) {
-          setSelectedFormName(response.data[0].name.en);
-        }
+        setForms(response.data.map(form => ({
+          ...form,
+          name: form.name[i18n.language] || form.name.en,
+          description: form.description[i18n.language] || form.description.en
+        })));
       } catch (error) {
         console.error('Error fetching forms:', error);
       }
     };
 
     fetchForms();
-  }, []);
+  }, [i18n.language]);
 
   const fetchFormDetails = async (ref) => {
     try {
@@ -56,7 +59,7 @@ const WasteManagement = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="WASTE MANAGEMENT" subtitle="Forms of waste management" />
+      <Header title={t("WASTE_MANAGEMENT_TITLE")} subtitle={t("WASTE_MANAGEMENT_SUBTITLE")} />
       
       <Box
         mt="20px"
@@ -79,19 +82,15 @@ const WasteManagement = () => {
             }}
           >
             <CardContent>
-              <Typography
-                sx={{ fontSize: 14 }}
-                color={theme.palette.secondary[400]}
-                gutterBottom
-                
-              >
-                {form.name && form.name.en ? form.name.en : ""}
+              <Typography sx={{ fontSize: 17 }} color={theme.palette.secondary[400]} gutterBottom>
+                {form.name}
               </Typography>
-              <Typography variant="body2">
-                {form.description && form.description.en ? form.description.en : ""}
+              <Typography variant="body2" sx={{ fontSize: 14 }}>
+                {form.description}
               </Typography>
-              <Typography variant="body2">Reference: {form.ref}</Typography>
+              
             </CardContent>
+
             <CardActions>
               <Button variant="primary" size="small" component={Link} to="/formsofx" onClick={() => handleEditClick(form.ref)}><FaRegEdit size={20} color="#FFC524"/></Button>
               <Button variant="primary" size="small"><FaEye size={20} /></Button>
@@ -101,7 +100,7 @@ const WasteManagement = () => {
                 size="small"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
-                See More
+                {t("SEE_MORE")}
               </Button>
             </CardActions>
             <Collapse
@@ -113,15 +112,14 @@ const WasteManagement = () => {
               }}
             >
               <CardContent>
-                <Typography>id: </Typography>
+                <Typography>{t("ID")}: </Typography>
+                <Typography variant="body2">{t("REFERENCE")}: {form.ref}</Typography>
               </CardContent>
             </Collapse>
           </Card>
         ))}
       </Box>
       {selectedForm && <Formsofx selectedForm={selectedForm} />}
-
-
     </Box>
   );
 };
