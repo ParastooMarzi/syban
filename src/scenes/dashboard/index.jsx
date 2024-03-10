@@ -32,12 +32,12 @@ const Dashboard = () => {
   const generateFakeData = () => {
     const rows = [];
     const formGroups = [t("wastemanagement"), t("crmAndFinance"), t("healthAndSafety")];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
       rows.push({
         _id: i + 1,
         userId: `User ${i + 1}`,
         createdAt: new Date().toLocaleDateString(),
-        products: [`Product ${i + 1}`],
+        products: Math.floor(Math.random() * 50),
         form_group: formGroups[Math.floor(Math.random() * formGroups.length)],
       });
     }
