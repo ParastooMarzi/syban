@@ -28,6 +28,21 @@ const Dashboard = () => {
   const { data, isLoading } = useGetDashboardQuery();
   const { t } = useTranslation();
   
+  // Fake data for demonstration purposes
+  const generateFakeData = () => {
+    const rows = [];
+    const formGroups = [t("wastemanagement"), t("crmAndFinance"), t("healthAndSafety")];
+    for (let i = 0; i < 20; i++) {
+      rows.push({
+        _id: i + 1,
+        userId: `User ${i + 1}`,
+        createdAt: new Date().toLocaleDateString(),
+        products: [`Product ${i + 1}`],
+        form_group: formGroups[Math.floor(Math.random() * formGroups.length)],
+      });
+    }
+    return rows;
+  };
 
   const columns = [
     {
@@ -53,10 +68,9 @@ const Dashboard = () => {
       renderCell: (params) => params.value.length,
     },
     {
-      field: "cost",
+      field: "form_group",
       headerName: t("FORM_GROUP"),
       flex: 1,
-      renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
     },
   ];
 
@@ -81,65 +95,65 @@ const Dashboard = () => {
         }}
         
       >
-      {/* ROW 1 : Form generator */}
-      <StatBox
-    title={
-      <Box
-      bgcolor="#f0f0f0"
-      padding="20px"
-      borderRadius="10px"
-      boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-        display="flex"
-        flexDirection={{ xs: "column", md: "row" }}
-        alignItems={{ xs: "center", md: "flex-start" }}
-        justifyContent="center"
-        height="120px"
-        color={theme.palette.secondary[500]}
-      >
-        <Typography variant="h5" mt={2} sx={{ marginBottom: { xs: 2, md: 0 }} }>
-          {t("FORM_GENERATOR")}
-        </Typography>
-        <a href="/formgenerator" style={{ textDecoration: "none", margin: { xs: "10px 0", md: "0 10px" } }}>
-          <Button
-            variant="contained"
-            size="large"
-            sx={{
-              background: "linear-gradient(to right, rgb(255, 149, 0), rgb(255, 221, 0))",
-              borderRadius: "30px",
-              border: 0,
-              color: "white",
-              height: "auto",
-             
-              boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                background: "linear-gradient(to right, rgb(255, 200, 0), rgb(255, 123, 0))",
-                boxShadow: "0 5px 8px 3px rgba(255, 105, 135, .3)",
-              },
-            }}
-          >
-            {t("JOIN_NOW")}
-          </Button>
-        </a>
-      </Box>
-    }
-    
-  />
+        {/* ROW 1 : Form generator */}
         <StatBox
-  title={
-    <Typography variant="h5" sx={{ color: "black" }}>
-      {t("TODAYS_FORMS")}
-    </Typography>
-  }
-  value={data && data.todayStats.totalSales}
-  increase="+21%"
-  description={t("SINCE_LAST_MONTH")}
-  icon={
-    <PointOfSale
-      sx={{ color: "#FFC524", fontSize: "26px" }}
-    />
-  }
-/>
+          title={
+            <Box
+              bgcolor="#f0f0f0"
+              padding="20px"
+              borderRadius="10px"
+              boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
+              display="flex"
+              flexDirection={{ xs: "column", md: "row" }}
+              alignItems={{ xs: "center", md: "flex-start" }}
+              justifyContent="center"
+              height="120px"
+              color={theme.palette.secondary[500]}
+            >
+              <Typography variant="h5" mt={2} sx={{ marginBottom: { xs: 2, md: 0 }} }>
+                {t("FORM_GENERATOR")}
+              </Typography>
+              <a href="/formgenerator" style={{ textDecoration: "none", margin: { xs: "10px 0", md: "0 10px" } }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    background: "linear-gradient(to right, rgb(255, 149, 0), rgb(255, 221, 0))",
+                    borderRadius: "30px",
+                    border: 0,
+                    color: "white",
+                    height: "auto",
+                   
+                    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      background: "linear-gradient(to right, rgb(255, 200, 0), rgb(255, 123, 0))",
+                      boxShadow: "0 5px 8px 3px rgba(255, 105, 135, .3)",
+                    },
+                  }}
+                >
+                  {t("JOIN_NOW")}
+                </Button>
+              </a>
+            </Box>
+          }
+          
+        />
+        <StatBox
+          title={
+            <Typography variant="h5" sx={{ color: "black" }}>
+              {t("TODAYS_FORMS")}
+            </Typography>
+          }
+          value={data && data.todayStats.totalSales}
+          increase="+21%"
+          description={t("SINCE_LAST_MONTH")}
+          icon={
+            <PointOfSale
+              sx={{ color: "#FFC524", fontSize: "26px" }}
+            />
+          }
+        />
 
         <Box
           gridColumn="span 8"
@@ -151,35 +165,35 @@ const Dashboard = () => {
           <OverviewChart view="sales" isDashboard={true} />
         </Box>
         <StatBox
-  title={
-    <Typography variant="h5" sx={{ color: "black" }}>
-      {t("MONTHLY_FORMS")}
-    </Typography>
-  }
-  value={data && data.thisMonthStats.totalSales}
-  increase="+5%"
-  description={t("SINCE_LAST_MONTH")}
-  icon={
-    <PersonAdd
-      sx={{ color: "#FFC524", fontSize: "26px" }}
-    />
-  }
-/>
-<StatBox
-  title={
-    <Typography variant="h5" sx={{ color: "black" }}>
-      {t("YEARLY_FORMS")}
-    </Typography>
-  }
-  value={data && data.yearlySalesTotal}
-  increase="+43%"
-  description={t("SINCE_LAST_MONTH")}
-  icon={
-    <Traffic
-      sx={{ color: "#FFC524", fontSize: "26px" }}
-    />
-  }
-/>
+          title={
+            <Typography variant="h5" sx={{ color: "black" }}>
+              {t("MONTHLY_FORMS")}
+            </Typography>
+          }
+          value={data && data.thisMonthStats.totalSales}
+          increase="+5%"
+          description={t("SINCE_LAST_MONTH")}
+          icon={
+            <PersonAdd
+              sx={{ color: "#FFC524", fontSize: "26px" }}
+            />
+          }
+        />
+        <StatBox
+          title={
+            <Typography variant="h5" sx={{ color: "black" }}>
+              {t("YEARLY_FORMS")}
+            </Typography>
+          }
+          value={data && data.yearlySalesTotal}
+          increase="+43%"
+          description={t("SINCE_LAST_MONTH")}
+          icon={
+            <Traffic
+              sx={{ color: "#FFC524", fontSize: "26px" }}
+            />
+          }
+        />
 
 
         {/* ROW 2 */}
@@ -213,9 +227,9 @@ const Dashboard = () => {
           }}
         >
           <DataGrid
-            loading={isLoading || !data}
+            
             getRowId={(row) => row._id}
-            rows={(data && data.transactions) || []}
+            rows={generateFakeData()}
             columns={columns}
           />
         </Box>
