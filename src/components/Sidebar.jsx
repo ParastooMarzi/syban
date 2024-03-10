@@ -55,6 +55,10 @@ const Sidebar = ({
       icon: <HomeOutlined />,
     },
     {
+      text: "wastemanagementDashboard",
+      icon: <CalendarMonthOutlined />,
+    },
+    {
       text: "Client Facing",
       icon: null,
     },
@@ -69,10 +73,6 @@ const Sidebar = ({
     {
       text: "CRM_and_Finance",
       icon: <ReceiptLongOutlined />,
-    },
-    {
-      text: "Geography",
-      icon: <PublicOutlined />,
     },
     {
       text: "Options",

@@ -1,51 +1,39 @@
 import React, { useMemo, useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import Header from "components/Header";
 import { ResponsiveLine } from "@nivo/line";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useTranslation } from 'react-i18next';
 
 const Daily = () => {
+  const { t, i18n } = useTranslation();
   const [startDate, setStartDate] = useState(new Date("2021-02-01"));
   const [endDate, setEndDate] = useState(new Date("2021-03-01"));
   const theme = useTheme();
 
   const [formattedData] = useMemo(() => {
-    const totalSalesLine = {
-      id: "Total Sales",
+    const activeContractsLine = {
+      id: t("Number of Active Contracts"),
       color: theme.palette.primary.main,
-      data: [],
-    };
-    const totalUnitsLine = {
-      id: "Total Units",
-      color: theme.palette.secondary.main,
-      data: [],
-    };
-    const averagePriceLine = {
-      id: "Average Price",
-      color: theme.palette.info.main,
       data: [],
     };
 
     // Generate fake data
     for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
       const formattedDate = date.toISOString().slice(0, 10);
-      const totalSales = Math.floor(Math.random() * 500) + 2000; // Random number between 2000 and 2500
-      const totalUnits = Math.floor(Math.random() * 100) + 500; // Random number between 500 and 600
-      const averagePrice = parseFloat((totalSales / totalUnits).toFixed(2)); // Calculate average price
+      const numActiveContracts = Math.floor(Math.random() * 50) + 50; // Random number between 50 and 100
 
-      totalSalesLine.data.push({ x: formattedDate, y: totalSales });
-      totalUnitsLine.data.push({ x: formattedDate, y: totalUnits });
-      averagePriceLine.data.push({ x: formattedDate, y: averagePrice });
+      activeContractsLine.data.push({ x: formattedDate, y: numActiveContracts });
     }
 
-    const formattedData = [totalSalesLine, totalUnitsLine, averagePriceLine];
+    const formattedData = [activeContractsLine];
     return [formattedData];
-  }, [startDate, endDate, theme.palette.primary.main, theme.palette.secondary.main, theme.palette.info.main]);
+  }, [startDate, endDate, theme.palette.primary.main, t]);
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="DAILY CHARTS" subtitle="Chart of daily forms" />
+      <Header title={t("Number of Active Contracts")} subtitle={t("Chart of daily forms")} />
       <Box height="75vh">
         <Box display="flex" justifyContent="flex-end">
           <Box>
@@ -71,76 +59,23 @@ const Daily = () => {
 
         <ResponsiveLine
           data={formattedData}
-          theme={{
-            background: theme.palette.background.paper,
-            textColor: theme.palette.text.primary,
-            grid: {
-              line: {
-                stroke: theme.palette.divider,
-              },
-            },
-            axis: {
-              domain: {
-                line: {
-                  stroke: theme.palette.divider,
-                },
-              },
-              ticks: {
-                line: {
-                  stroke: theme.palette.divider,
-                },
-                text: {
-                  fill: theme.palette.text.primary,
-                },
-              },
-              legend: {
-                text: {
-                  fill: theme.palette.text.primary,
-                },
-              },
-            },
-            legends: {
-              text: {
-                fill: theme.palette.text.primary,
-              },
-            },
-            tooltip: {
-              container: {
-                background: theme.palette.background.paper,
-              },
-            },
-          }}
           margin={{ top: 50, right: 110, bottom: 70, left: 60 }}
-          xScale={{ type: "point" }}
-          yScale={{
-            type: "linear",
-            min: "auto",
-            max: "auto",
-            stacked: false,
-            reverse: false,
-          }}
-          yFormat=" >-.2f"
-          curve="linear"
-          axisTop={null}
-          axisRight={null}
+          xScale={{ type: "time", format: "%Y-%m-%d" }}
+          yScale={{ type: "linear", min: 0, max: "auto", stacked: false, reverse: false }}
+          xFormat="time:%Y-%m-%d"
           axisBottom={{
-            orient: "bottom",
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 90,
-            legend: "Date",
+            format: "%b %d",
+            tickValues: "every 1 day",
+            legend: t("Time Interval"),
             legendOffset: 60,
             legendPosition: "middle",
           }}
           axisLeft={{
-            orient: "left",
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: "Value",
+            legend: t("Number of Active Contracts"),
             legendOffset: -50,
             legendPosition: "middle",
           }}
+          curve="linear"
           enableGridX={false}
           enableGridY={false}
           pointSize={10}
@@ -176,6 +111,10 @@ const Daily = () => {
             },
           ]}
         />
+      </Box>
+      <Box mt="2rem">
+        
+        <Typography variant="body1">{t("This plot visualizes the number of contracts that remain active at each time interval, considering the span between the start and end dates. A contract is counted as active for a given interval if the project commenced (ContractCommencement-Start Date) before or during that interval and did not conclude (ContractEnd-End Date) before the interval's start. This analysis allows for tracking the fluctuation in active contracts over time, providing insights into contract management and operational workload.")}</Typography>
       </Box>
     </Box>
   );

@@ -27,6 +27,7 @@ const Dashboard = () => {
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const { data, isLoading } = useGetDashboardQuery();
   const { t } = useTranslation();
+  
 
   const columns = [
     {
@@ -232,7 +233,7 @@ const Dashboard = () => {
           <Typography
             p="0 0.6rem"
             fontSize="0.8rem"
-            marginTop={5}
+            marginTop={2}
             sx={{ color: theme.palette.secondary[500] }}
           >
             {t("BREAKDOWN_DESCRIPTION")}

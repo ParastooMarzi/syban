@@ -1,9 +1,11 @@
 import React, { useMemo } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Typography } from "@mui/material";
 import Header from "components/Header";
-import { ResponsiveLine } from "@nivo/line";
+import { ResponsiveBar } from "@nivo/bar";
+import { useTranslation } from 'react-i18next';
 
 const Monthly = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const [formattedData] = useMemo(() => {
@@ -12,33 +14,22 @@ const Monthly = () => {
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
-    const totalSalesLine = {
-      id: "Total Filled",
-      color: theme.palette.primary.main,
-      data: months.map(month => ({
-        x: month,
-        y: Math.floor(Math.random() * 10000) + 5000 // Random sales between 5000 and 15000
-      })),
-    };
-    const totalUnitsLine = {
-      id: "Total Generated",
-      color: theme.palette.secondary.main,
-      data: months.map(month => ({
-        x: month,
-        y: Math.floor(Math.random() * 500) + 1000 // Random units between 1000 and 1500
-      })),
-    };
+    const activeContractsValue = months.map(month => ({
+      month,
+      value: Math.floor(Math.random() * 1000000) + 500000 // Random value between 500000 and 1500000
+    }));
 
-    const formattedData = [totalSalesLine, totalUnitsLine];
-    return [formattedData];
-  }, [theme.palette.primary.main, theme.palette.secondary.main]);
+    return [activeContractsValue];
+  }, []);
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="MONTHLY FORMS" subtitle="Chart of monthly forms" />
+      <Header title={t("Value of Active Contracts")} subtitle={t("Chart of monthly forms")} />
       <Box height="75vh">
-        <ResponsiveLine
+        <ResponsiveBar
           data={formattedData}
+          keys={["value"]}
+          indexBy="month"
           theme={{
             axis: {
               domain: {
@@ -68,11 +59,6 @@ const Monthly = () => {
                 strokeDasharray: "4 4",
               },
             },
-            legends: {
-              text: {
-                fill: theme.palette.secondary[200],
-              },
-            },
             tooltip: {
               container: {
                 background: theme.palette.background.paper,
@@ -83,25 +69,13 @@ const Monthly = () => {
               },
             },
           }}
-          colors={{ datum: "color" }}
           margin={{ top: 50, right: 50, bottom: 70, left: 60 }}
-          xScale={{ type: "point" }}
-          yScale={{
-            type: "linear",
-            min: "auto",
-            max: "auto",
-            stacked: false,
-            reverse: false,
-          }}
-          yFormat=" >-.2f"
-          axisTop={null}
-          axisRight={null}
           axisBottom={{
             orient: "bottom",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "Month",
+            legend: t("Time Interval"),
             legendOffset: 36,
             legendPosition: "middle",
           }}
@@ -110,45 +84,36 @@ const Monthly = () => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "Total",
+            legend: t("Value of Active Contracts"),
             legendOffset: -40,
             legendPosition: "middle",
+            format: (value) => `${value.toLocaleString()} ریال`, // Format value with Persian currency symbol
           }}
           enableGridX={false}
           enableGridY={true}
-          pointSize={10}
-          pointColor={{ theme: "background" }}
-          pointBorderWidth={2}
-          pointBorderColor={{ from: "serieColor" }}
-          pointLabelYOffset={-12}
-          useMesh={true}
-          legends={[
-            {
-              anchor: "top-right",
-              direction: "column",
-              justify: false,
-              translateX: 50,
-              translateY: 0,
-              itemsSpacing: 0,
-              itemDirection: "left-to-right",
-              itemWidth: 80,
-              itemHeight: 20,
-              itemOpacity: 0.75,
-              symbolSize: 12,
-              symbolShape: "circle",
-              symbolBorderColor: "rgba(0, 0, 0, .5)",
-              effects: [
-                {
-                  on: "hover",
-                  style: {
-                    itemBackground: "rgba(0, 0, 0, .03)",
-                    itemOpacity: 1,
-                  },
-                },
-              ],
-            },
-          ]}
+          enableLabel={false}
+          colors={{ datum: "data.color" }}
+          labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          isInteractive={true}
+          tooltip={({ id, value, color }) => (
+            <Box
+              sx={{
+                padding: "0.5rem",
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "4px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              }}
+            >
+              <Typography variant="body1">{`${t("Month")}: ${id}`}</Typography>
+              <Typography variant="body1">{`${t("Value")}: ${value.toLocaleString()} ریال`}</Typography>
+            </Box>
+          )}
         />
+      </Box>
+      <Box mt="2rem">
+
+        <Typography variant="body1">{t("This plot visualizes the sum of the values of contracts (Contract-Contract Price) that remain active at each time interval, considering the span between the start and end dates. A contract is counted as active for a given interval if the project commenced (ContractCommencement-Start Date) before or during that interval and did not conclude (ContractEnd-End Date) before the interval's start. This analysis allows for tracking the fluctuation in active contracts over time, providing insights into contract management and operational workload.")}</Typography>
       </Box>
     </Box>
   );

@@ -7,7 +7,6 @@ import { themeSettings } from "theme";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import Wastemanagement from "scenes/watemanagement";
-import Geography from "scenes/geography";
 import Overview from "scenes/overview";
 import Daily from "scenes/daily";
 import Monthly from "scenes/monthly";
@@ -19,6 +18,7 @@ import CRMAndFinance from "scenes/CRM&Finance";
 import Formsofx from "formComponents";
 import FormGenerator from "scenes/formGenerator";
 import MyForms from "scenes/MyForms";
+import WasteManagementDashboard from "scenes/wastemanagementDashboard";
 
 
 function App() {
@@ -43,12 +43,12 @@ function App() {
               <Route path="/formsofx" element={<Formsofx/>}/>
               <Route path="/formgenerator" element={<FormGenerator/>}/>
               <Route path="crm_and_finance" element={<CRMAndFinance/>}/>
-              <Route path="/geography" element={<Geography />} />
               <Route path="/myforms" element={<MyForms />} />
               <Route path="/daily" element={<Daily />} />
               <Route path="/monthly" element={<Monthly />} />
               <Route path="/breakdown" element={<Breakdown />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/wastemanagementdashboard" element={<WasteManagementDashboard />} />
             </Route>
           </Routes>
         </ThemeProvider>
